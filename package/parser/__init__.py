@@ -13,3 +13,4 @@ from .simple_insert_parser import SimpleInsertParser
 from .backslash_parser import BackslashParser
 from .curly_close_parser import CurlyCloseParser
 from .curly_open_parser import CurlyOpenParser
+from .paragraph_parser import ParagraphParser

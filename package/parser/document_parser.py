@@ -23,6 +23,11 @@ class DocumentParser(BaseParser):
         raise ParseError(f'No valid parser found for: {self._input[pos:pos+20]} [...]')
 
 
+    def before(self) -> str:
+        return '<p>'
+
+    def after(self) -> str:
+        return '</p>'
 
     def findEnd(self, start:int, end:int) -> int:
         
