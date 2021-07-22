@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import os
+from package.parser.preprocessor import Preprocessor
 from package.parser import DocumentParser
 from package.project import Project
 import sys
@@ -61,8 +62,9 @@ def push_post_id(db:Database,id:int):
     post = project.get_post(id)
     if(not post):
         sys.exit("No post with that ID")
-    file = open(post['path'],'r')
-    parser = DocumentParser(file.read(),0)
+    input = open(post['path'],'r').read()
+    preprocessed = Preprocessor.process(input)
+    parser = DocumentParser(preprocessed,0)
     db.update_post(project_id=project.get_id(),post_id=id,title=post['title'],date=post['date'],text=parser.parse())
     pass
 

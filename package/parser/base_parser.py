@@ -7,7 +7,7 @@ from package.errors import ParseError
 
 class BaseParser(Parser):
 
-    parsers : List[Type['BaseParser']] = []
+    parsers : List[Type[Parser]] = []
 
     def __init__(self, input:str, start:int) -> None:
         self._input = input
@@ -136,15 +136,3 @@ class BaseParser(Parser):
             output.write(field.parse())
         output.write(self.after())
         return output.getvalue()
-
-
-    @classmethod
-    def matches(cls, input:str, pos:int) -> bool:
-        """
-        @params:
-        input: the input string
-        pos: the position, where this Parser should be tested
-
-        @returns: True, if the identifier matches
-        """
-        return False

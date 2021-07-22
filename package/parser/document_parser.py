@@ -32,7 +32,3 @@ class DocumentParser(BaseParser):
             return len(self._input)
 
 
-
-    @classmethod
-    def matches(cls, input:str, pos:int) -> bool:
-        return True

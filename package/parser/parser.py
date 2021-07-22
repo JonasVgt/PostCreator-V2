@@ -34,3 +34,13 @@ class Parser:
 
         return ""
 
+    @classmethod
+    def matches(cls, input:str, pos:int) -> bool:
+        """
+        @params:
+        input: the input string
+        pos: the position, where this Parser should be tested
+
+        @returns: True, if the identifier matches
+        """
+        return False
