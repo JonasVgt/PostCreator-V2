@@ -32,11 +32,15 @@ class TestParserErrors(unittest.TestCase):
 
     def test_empty_tag_bracket(self):
         with self.assertRaises(e.ParseError):
-            p.DocumentParser("This is a \\{test} String",0).parse()
+            p.DocumentParser("This is a \\{} String",0).parse()
 
     def test_empty_tag_space(self):
         with self.assertRaises(e.ParseError):
             p.DocumentParser("This is a \\ test String",0).parse()
+
+    def test_paragraph_in_tag(self):
+        with self.assertRaises(e.ParseError):
+            p.DocumentParser("This is \\em{a\\p} test String",0).parse()
 
 
 if __name__ == '__main__':

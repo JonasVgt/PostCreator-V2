@@ -62,7 +62,8 @@ class BaseParser(Parser):
         raise ParseError(f'No valid parser found for: {self._input[pos:pos+20]} [...]')
 
     def processText(self,start:int,end:int):
-        self._fields.append(TextParser(self._input,start,end))
+        if(start!=end):
+            self._fields.append(TextParser(self._input,start,end))
 
     def processIdentifier(self) -> int:
         """

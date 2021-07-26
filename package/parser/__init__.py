@@ -3,6 +3,8 @@ from .text_parser import TextParser
 
 from .base_parser import BaseParser
 from .document_parser import DocumentParser
+from .enum_parser import EnumParser
+from .list_parser import ListParser
 
 from .simple_enclosing_parser import SimpleEnclosingParser
 from .strong_parser import StrongParser

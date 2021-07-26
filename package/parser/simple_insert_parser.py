@@ -10,8 +10,9 @@ class SimpleInsertParser(Parser):
     def __init__(self, input:str, start:int) -> None:
         self._input = input
         self._start = start
-        self._end = self.processIdentifier()
         self._append_space = False
+        self._end = self.processIdentifier()
+
         
 
     def processIdentifier(self) -> int:
@@ -20,7 +21,7 @@ class SimpleInsertParser(Parser):
         match = pattern.match(self._input,self._start)
 
         if (not match):
-            pattern = re.compile(rf'\\{self._identifier}')
+            pattern = re.compile(rf'\\{self._identifier} ')
             match = pattern.match(self._input,self._start)
             self._append_space = True
             if(not match):

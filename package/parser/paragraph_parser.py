@@ -4,6 +4,6 @@ from package.parser.simple_insert_parser import SimpleInsertParser
 
 class ParagraphParser(SimpleInsertParser):
     _identifier :str = "p"
-    _html_insert :str = "</p>\n<p>"
+    _html_insert :str = "</p><p>"
 
 DocumentParser.parsers.append(ParagraphParser)

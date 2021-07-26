@@ -4,10 +4,13 @@ from package.parser.parser import Parser
 
 class TextParser(Parser):
 
-    def __init__(self, input:str, start:int, end:int) -> None:
+    def __init__(self, input:str, start :int = 0, end:int = -1) -> None:
         self._input = input
         self._start = start
-        self._end = end
+        if(end < 0):
+            self._end = len(input)
+        else:
+            self._end = end
 
 
   
