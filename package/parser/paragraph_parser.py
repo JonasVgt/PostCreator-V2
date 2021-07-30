@@ -7,3 +7,4 @@ class ParagraphParser(SimpleInsertParser):
     _html_insert :str = "</p><p>"
 
 DocumentParser.parsers.append(ParagraphParser)
+

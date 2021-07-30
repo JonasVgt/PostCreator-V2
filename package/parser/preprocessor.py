@@ -7,5 +7,5 @@ class Preprocessor:
         processed = input.replace('\n',' ')
         processed = re.sub(r' +', ' ', processed)
         processed = re.sub(r'^ ', '', processed)
-        processed = re.sub(r' $', '', processed)
+        processed = re.sub(r' ?$', ' ', processed)
         return processed

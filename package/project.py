@@ -3,6 +3,7 @@ import os
 import shutil
 from datetime import date
 import re
+from typing import Dict, List, Union
 
 class Project:
 
@@ -22,37 +23,37 @@ class Project:
         self.path = path
         self.load()
 
-    def load(self):
+    def load(self) -> None:
         file = open(os.path.join(self.path,"project.cfg"), 'r')
         self.config = json.load(file)
 
-    def write(self):
+    def write(self) -> None:
         file = open(os.path.join(self.path,"project.cfg"), 'w')
         file.write(json.dumps(obj=self.config,indent=4))
 
-    def get_id(self):
+    def get_id(self) -> int:
         return self.config['id']
 
-    def set_id(self, id: int):
+    def set_id(self, id: int) -> None:
         self.config['id'] = id
 
-    def get_title(self):
+    def get_title(self) -> str:
         return self.config['title']
 
-    def set_title(self, title:str):
+    def set_title(self, title:str) -> None:
         self.config['title'] = title
 
-    def get_posts(self):
+    def get_posts(self) -> List[Dict[str,str]]:
         return self.config['posts']
     
-    def get_post(self,id:int):
+    def get_post(self,id:int) -> Union[None,Dict[str,str]]:
         for post in self.get_posts():
             if(post['id'] == id):
                 return post
         return None
 
 
-    def add_post(self,post_id:int,title:str):
+    def add_post(self,post_id:int,title:str) -> Dict[str,str]:
         path = os.path.join("./",Project.getUniqueName("./",title=title)+".post")
 
         open(path, 'a').close()
@@ -67,7 +68,7 @@ class Project:
         return post
 
     @staticmethod
-    def getUniqueName(root:str,title:str):
+    def getUniqueName(root:str,title:str) -> str:
         for i in range (1000):
             filename = title.title().replace(" ","")
             if(i != 0):

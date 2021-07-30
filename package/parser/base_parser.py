@@ -59,7 +59,7 @@ class BaseParser(Parser):
                 self._fields.append(p)
                 return p.end()
         
-        raise ParseError(f'No valid parser found for: {self._input[pos:pos+20]} [...]')
+        raise ParseError(f'No valid parser found for: {self._input[pos:pos+20]} [...] ({self.parsers})')
 
     def processText(self,start:int,end:int):
         if(start!=end):
