@@ -22,7 +22,7 @@ def create_post(args):
     post_id = db.get_largest_post_id(project_id=project.get_id())+1
     post = project.add_post(post_id,title)
     project.write()
-    post_id = db.create_post(post_id=post_id, project_id=project.get_id(),title=title,text="",date=post['date'])
+    post_id = db.create_post(post_id=post_id, project_id=project.get_id(),title=title,text="",date=post['date'],public=bool(post['public']))
 
 
 
@@ -35,7 +35,7 @@ def create_project(args):
     title = args[3]
     project_id = db.get_largest_project_id()+1
     Project.create(title=title,project_id=project_id)
-    db.create_project(project_id=project_id,title=title)
+    db.create_project(project_id=project_id,title=title, public=False)
     
 
 def push_project(args):
@@ -45,7 +45,7 @@ def push_project(args):
     db = Database.getDatabase()
 
     project = Project("./")
-    db.update_project(project_id=project.get_id(),title=project.get_title())
+    db.update_project(project_id=project.get_id(),title=project.get_title(),public=project.get_public())
 
     for post in project.get_posts():
         push_post_id(id=int(post['id']))
@@ -73,8 +73,8 @@ def push_post_id(id:int):
     parser = DocumentParser(preprocessed,0)
     db = Database.getDatabase()
 
-    db.update_post(project_id=project.get_id(),post_id=id,title=post['title'],date=post['date'],text=parser.parse())
-    pass
+    db.update_post(project_id=project.get_id(),post_id=id,title=post['title'],date=post['date'],text=parser.parse(),public=bool(post['public']))
+    
 
 
 def pull_post(args):#TODO Implement

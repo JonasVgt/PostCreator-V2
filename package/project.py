@@ -43,6 +43,13 @@ class Project:
     def set_title(self, title:str) -> None:
         self.config['title'] = title
 
+    def get_public(self) -> bool:
+        return self.config['public']
+
+    def set_public(self, public:bool) -> None:
+        self.config['public'] = public
+
+
     def get_posts(self) -> List[Dict[str,str]]:
         return self.config['posts']
     
