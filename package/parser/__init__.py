@@ -9,6 +9,10 @@ from .list_parser import ListParser
 from .simple_enclosing_parser import SimpleEnclosingParser
 from .strong_parser import StrongParser
 from .em_parser import EmParser
+from .section_parser import SectionParser
+from .subsection_parser import SubsectionParser
+from .subsubsection_parser import SubsubsectionParser
+
 
 
 from .simple_insert_parser import SimpleInsertParser

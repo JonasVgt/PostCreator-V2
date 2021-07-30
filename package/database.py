@@ -1,19 +1,38 @@
 import json
+from typing import Dict
 from package.config import Config
 import mysql.connector
 
 
 class Database:
 
-    def __init__(self) -> None:
-        conf = Config()
+    databases :Dict[str,'Database'] = {}
+
+    @classmethod
+    def getDatabase(cls):
+        if(cls.database):
+            return cls.database
+
+        config = Config()
+        db = Database(
+            host=config.get(f"db_host"),
+            user=config.get(f"db_user"),
+            password=config.get(f"db_password"),
+            db_name=config.get(f"db_database")
+            )
+        cls.database = db
+        return db
+
+    def __init__(self, host:str,user:str,password:str,db_name:str) -> None:
+
         self.connection = mysql.connector.connect(
-            host=conf.get("db_host"),
-            user=conf.get("db_user"),
-            password=conf.get("db_password"),
-            database=conf.get("db_database")
+            host=host,
+            user=user,
+            password=password,
+            database=db_name
         )
         self.cursor : mysql.connector.connection.CursorBase = self.connection.cursor()
+
 
     def __del__(self):
         self.connection.close()
