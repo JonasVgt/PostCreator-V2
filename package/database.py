@@ -1,4 +1,6 @@
 import json
+from package.project import Project
+from package.post import Post
 from typing import Dict
 from package.config import Config
 import mysql.connector
@@ -38,19 +40,18 @@ class Database:
         self.connection.close()
 
 
-    def create_post(self,post_id:int,project_id:int, title:str,text:str, date:str, public:bool) -> int:
+    def create_post(self,project_id:int,post:Post) -> None:
         sql = "INSERT INTO posts (project_id,post_id, title,date,text, public) VALUES (%s, %s, %s, %s, %s, %s);"
-        values = (project_id,post_id, title, date,text, public)
+        values = (project_id,post.id, post.title, post.date,post.parse(), post.public)
         self.cursor.execute(sql,values)
         self.connection.commit()
-        return post_id
+ 
 
-    def create_project(self,project_id:int,title:str,public:bool) -> int:
+    def create_project(self,project:Project) -> None:
         sql = "INSERT INTO projects (project_id, title, public) VALUES (%s, %s, %s);"
-        values = (project_id,title, public)
+        values = (project.id, project.title, project.public)
         self.cursor.execute(sql,values)
         self.connection.commit()
-        return project_id
 
 
     def update_project(self,project_id:int, title:str,public:bool) -> None:

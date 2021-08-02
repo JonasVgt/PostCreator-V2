@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
-import os
+from package.post import Post
+from package.io_controller import IOController
 from package.parser.preprocessor import Preprocessor
 from package.parser import DocumentParser
 from package.project import Project
@@ -12,17 +13,19 @@ def create_post(args):
     if(len(args) != 4):
         sys.exit("Usage: postcreator post create <title>")
 
-    if(not os.path.exists("./project.cfg") or not os.path.isfile("./project.cfg")):
-        sys.exit("This function must be called from inside a project folder")
-
     db = Database.getDatabase()
 
     title = args[3]
-    project = Project("./")
-    post_id = db.get_largest_post_id(project_id=project.get_id())+1
-    post = project.add_post(post_id,title)
-    project.write()
-    post_id = db.create_post(post_id=post_id, project_id=project.get_id(),title=title,text="",date=post['date'],public=bool(post['public']))
+    project = IOController.read_project("./")
+    post_id = db.get_largest_post_id(project_id=project.id)+1
+    post = Post(
+        id = post_id,
+        title=title,
+        path=IOController.create_post(path='./',title=title,extension='.post'),
+        public=False
+        )
+    project.add_post(post)
+    db.create_post(project_id=project.id,post=post)
 
 
 
@@ -34,8 +37,14 @@ def create_project(args):
 
     title = args[3]
     project_id = db.get_largest_project_id()+1
-    Project.create(title=title,project_id=project_id)
-    db.create_project(project_id=project_id,title=title, public=False)
+    project = Project(
+        path=IOController.find_unique_name(path='./', title=title, extension=''),
+        id=project_id,
+        title=title,
+        public=False,
+        posts=[]
+    )
+    db.create_project(project=project)
     
 
 def push_project(args):
