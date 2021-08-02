@@ -1,5 +1,7 @@
+from abc import ABC
 
-class Parser:
+
+class Parser(ABC):
 
     def __init__(self, input:str, start:int) -> None:
         self._input = input
@@ -34,8 +36,8 @@ class Parser:
 
         return ""
 
-    @classmethod
-    def matches(cls, input:str, pos:int) -> bool:
+    @staticmethod
+    def matches(input:str, pos:int) -> bool:
         """
         @params:
         input: the input string

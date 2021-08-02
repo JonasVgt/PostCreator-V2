@@ -12,20 +12,20 @@ class Config:
         self.validateConfig()
         pass
 
-    def load(self):
+    def load(self) -> None:
         file = open(self._config_path, 'r')
         self.config = json.load(file)
 
 
-    def validateConfig(self):
+    def validateConfig(self) -> None:
         #TODO: implement
         pass
 
-    def validateType(self, entry):
+    def validateType(self, entry) -> None:
         #TODO: implement
         pass
 
-    def get(self, attribute:str):
+    def get(self, attribute:str) -> str:
         res = self.config[attribute]
         if(not res):
             raise KeyError(f'No entry found in the Config for the attribute {attribute}')
