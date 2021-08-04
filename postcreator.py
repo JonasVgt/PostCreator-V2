@@ -23,7 +23,7 @@ def create_post(args):
     post_id = db.get_largest_post_id(project_id=project.id)+1
     post = project.add_post(post_id,title)
     project.write()
-    db.create_post(project.id,post, "")
+    db.create_post(project.id,post)
 
 
 
@@ -69,12 +69,8 @@ def push_post_id(id:int):
     post = project.get_post(id)
     if(not post):
         sys.exit("No post with that ID")
-    input = open(post.path,'r').read()
-    preprocessed = Preprocessor.process(input)
-    parser = DocumentParser(preprocessed,0)
     db = Database.getDatabase()
-
-    db.update_post(project_id=project.id,post=post,text=parser.parse())
+    db.update_post(project_id=project.id,post=post)
     
 
 

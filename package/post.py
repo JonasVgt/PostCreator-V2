@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from package.parser.preprocessor import Preprocessor
 from package.parser.document_parser import DocumentParser
 from typing import Any, Dict
 import datetime
@@ -15,10 +16,11 @@ class Post:
 
     
 
-    # def parse(self) -> str:
-    #     input = IOController.load_post(self.path)
-    #     parser = DocumentParser(input,0)
-    #     return parser.parse()
+    def parse(self) -> str:
+        input = open(self.path, 'r').read()
+        preprocessed = Preprocessor.process(input)
+        parser = DocumentParser(preprocessed,0)
+        return parser.parse()
 
 
     @staticmethod

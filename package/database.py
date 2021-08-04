@@ -40,9 +40,9 @@ class Database:
         self.connection.close()
 
 
-    def create_post(self, project_id : int, post:Post, text:str):
+    def create_post(self, project_id : int, post:Post):
         sql = "INSERT INTO posts (project_id,post_id, title,date,text, public) VALUES (%s, %s, %s, %s, %s, %s);"
-        values = (project_id,post.id,post.title,post.date,text, post.public)
+        values = (project_id,post.id,post.title,post.date,post.parse(), post.public)
         self.cursor.execute(sql,values)
         self.connection.commit()
 
@@ -61,9 +61,9 @@ class Database:
 
 
 
-    def update_post(self,project_id:int, post:Post, text:str) -> None:
+    def update_post(self,project_id:int, post:Post) -> None:
         sql = "UPDATE posts SET title = %s, date = %s, text=%s, public=%s WHERE project_id = %s AND post_id = %s;"
-        values = (post.title,post.date,  text,post.public,project_id,post.id)
+        values = (post.title,post.date,  post.parse(),post.public,project_id,post.id)
         self.cursor.execute(sql,values)
         self.connection.commit()
         
