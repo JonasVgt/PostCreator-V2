@@ -4,7 +4,7 @@ import os
 from package.post import Post
 import shutil
 from datetime import date
-from typing import Optional
+from typing import List, Optional
 
 
 @dataclass
@@ -14,25 +14,21 @@ class Project:
     title : str
     public : bool
     path : str
+    posts: List[Post]
 
     @staticmethod
-    def create(title:str,project_id:int):
+    def create(title:str,project_id:int) -> 'Project':
         path = os.path.join("./projects/", Project.getUniqueName("./projects",title=title))
 
         shutil.copytree(src="./default_project", dst=path)
 
-        project = Project(path=path)
-        project.id = project_id
-        project.title = title
+        project = Project(path=path,id=project_id,public=False,title=title, posts=[])
         project.write()
         return project
 
-    def __init__(self, path: str) -> None:
-        self.path = path
-        self.load()
-
-    def load(self) -> None:
-        file = open(os.path.join(self.path,"project.cfg"), 'r')
+    @staticmethod
+    def load(path:str) -> 'Project':
+        file = open(os.path.join(path,"project.cfg"), 'r')
         config = json.load(file)
         try:
             posts = []
@@ -46,12 +42,14 @@ class Project:
             if(type(config['public']) != bool):
                 raise ValueError(f'parameter public must be of type bool but is '+ str(type(config['public'])))
 
-            
-            self.id= int(config['id'])
-            self.title=str(config['title'])
-            self.public=bool(config['public'])
-            self.posts=posts
-            
+            return Project(
+                path=path,
+                id = int(config['id']),
+                title=str(config['title']),
+                public=bool(config['public']),
+                posts=posts
+            )
+
         except KeyError as e:
             raise ValueError(f"Missing Parameter: '{e.args[0]}'")
 

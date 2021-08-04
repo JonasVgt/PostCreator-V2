@@ -19,7 +19,7 @@ def create_post(args):
     db = Database.getDatabase()
 
     title = args[3]
-    project = Project("./")
+    project = Project.load("./")
     post_id = db.get_largest_post_id(project_id=project.id)+1
     post = project.add_post(post_id,title)
     project.write()
@@ -45,7 +45,7 @@ def push_project(args):
 
     db = Database.getDatabase()
 
-    project = Project("./")
+    project = Project.load("./")
     db.update_project(project=project)
 
     for post in project.posts:
@@ -65,7 +65,7 @@ def push_post(args):
 
 
 def push_post_id(id:int):
-    project = Project("./")
+    project = Project.load("./",)
     post = project.get_post(id)
     if(not post):
         sys.exit("No post with that ID")
