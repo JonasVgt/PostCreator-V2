@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import os
+from package.post import Post
 from package.parser.preprocessor import Preprocessor
 from package.parser import DocumentParser
 from package.project import Project
@@ -22,7 +23,7 @@ def create_post(args):
     post_id = db.get_largest_post_id(project_id=project.id)+1
     post = project.add_post(post_id,title)
     project.write()
-    post_id = db.create_post(post_id=post_id, project_id=project.id,title=title,text="",date=post.date.isoformat(),public=post.public)
+    db.create_post(project.id,post, "")
 
 
 
@@ -34,8 +35,8 @@ def create_project(args):
 
     title = args[3]
     project_id = db.get_largest_project_id()+1
-    Project.create(title=title,project_id=project_id)
-    db.create_project(project_id=project_id,title=title, public=False)
+    project = Project.create(title=title,project_id=project_id)
+    db.create_project(project=project)
     
 
 def push_project(args):
@@ -45,7 +46,7 @@ def push_project(args):
     db = Database.getDatabase()
 
     project = Project("./")
-    db.update_project(project_id=project.id,title=project.title,public=project.public)
+    db.update_project(project=project)
 
     for post in project.posts:
         push_post_id(id=post.id)
@@ -73,7 +74,7 @@ def push_post_id(id:int):
     parser = DocumentParser(preprocessed,0)
     db = Database.getDatabase()
 
-    db.update_post(project_id=project.id,post_id=id,title=post.title,date=post.date.isoformat(),text=parser.parse(),public=post.public)
+    db.update_post(project_id=project.id,post=post,text=parser.parse())
     
 
 
