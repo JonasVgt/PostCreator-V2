@@ -78,20 +78,8 @@ class Project:
         return None
 
 
-    def add_post(self,post_id:int,title:str) -> Post:
-        path = os.path.join("./",Project.getUniqueName("./",title=title)+".post")
-
-        open(path, 'a').close()
-        
-        post = Post(
-            id=post_id,
-            title = title,
-            date =  date.today(),
-            path = path,
-            public=False
-        )
+    def add_post(self,post:Post):
         self.posts.append(post)
-        return post
 
 
     @staticmethod

@@ -21,7 +21,13 @@ def create_post(args):
     title = args[3]
     project = Project.load("./")
     post_id = db.get_largest_post_id(project_id=project.id)+1
-    post = project.add_post(post_id,title)
+    post = Post(
+        id=post_id,
+        title=title,
+        path="",#TODO,
+        public=False,
+    )
+    project.add_post(post)
     project.write()
     db.create_post(project.id,post)
 
