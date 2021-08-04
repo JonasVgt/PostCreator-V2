@@ -19,10 +19,10 @@ def create_post(args):
 
     title = args[3]
     project = Project("./")
-    post_id = db.get_largest_post_id(project_id=project.get_id())+1
+    post_id = db.get_largest_post_id(project_id=project.id)+1
     post = project.add_post(post_id,title)
     project.write()
-    post_id = db.create_post(post_id=post_id, project_id=project.get_id(),title=title,text="",date=post['date'],public=bool(post['public']))
+    post_id = db.create_post(post_id=post_id, project_id=project.id,title=title,text="",date=post.date.isoformat(),public=post.public)
 
 
 
@@ -45,10 +45,10 @@ def push_project(args):
     db = Database.getDatabase()
 
     project = Project("./")
-    db.update_project(project_id=project.get_id(),title=project.get_title(),public=project.get_public())
+    db.update_project(project_id=project.id,title=project.title,public=project.public)
 
-    for post in project.get_posts():
-        push_post_id(id=int(post['id']))
+    for post in project.posts:
+        push_post_id(id=post.id)
 
 
 def pull_project(args):#TODO Implement
@@ -68,12 +68,12 @@ def push_post_id(id:int):
     post = project.get_post(id)
     if(not post):
         sys.exit("No post with that ID")
-    input = open(post['path'],'r').read()
+    input = open(post.path,'r').read()
     preprocessed = Preprocessor.process(input)
     parser = DocumentParser(preprocessed,0)
     db = Database.getDatabase()
 
-    db.update_post(project_id=project.get_id(),post_id=id,title=post['title'],date=post['date'],text=parser.parse(),public=bool(post['public']))
+    db.update_post(project_id=project.id,post_id=id,title=post.title,date=post.date.isoformat(),text=parser.parse(),public=post.public)
     
 
 

@@ -1,11 +1,19 @@
+from dataclasses import dataclass
 import json
 import os
+from package.post import Post
 import shutil
 from datetime import date
-import re
-from typing import Dict, List, Union
+from typing import Optional
 
+
+@dataclass
 class Project:
+
+    id : int
+    title : str
+    public : bool
+    path : str
 
     @staticmethod
     def create(title:str,project_id:int):
@@ -14,8 +22,8 @@ class Project:
         shutil.copytree(src="./default_project", dst=path)
 
         project = Project(path=path)
-        project.set_id(project_id)
-        project.set_title(title)
+        project.id = project_id
+        project.title = title
         project.write()
         return project
 
@@ -25,54 +33,68 @@ class Project:
 
     def load(self) -> None:
         file = open(os.path.join(self.path,"project.cfg"), 'r')
-        self.config = json.load(file)
+        config = json.load(file)
+        try:
+            posts = []
+            if(type(config['posts']) != list):
+                raise ValueError(f'parameter public must be of type list but is '+ str(type(config['posts'])))
+
+
+            for post_dict in config['posts']:
+                posts.append(Post.load(post_dict))
+
+            if(type(config['public']) != bool):
+                raise ValueError(f'parameter public must be of type bool but is '+ str(type(config['public'])))
+
+            
+            self.id= int(config['id'])
+            self.title=str(config['title'])
+            self.public=bool(config['public'])
+            self.posts=posts
+            
+        except KeyError as e:
+            raise ValueError(f"Missing Parameter: '{e.args[0]}'")
 
     def write(self) -> None:
+        posts = []
+        for post in self.posts:
+            posts.append(Post.dump(post))
+
+
+        config = {
+            'id': self.id,
+            'title':self.title,
+            'public':self.public,
+            'posts':posts
+        }
+
         file = open(os.path.join(self.path,"project.cfg"), 'w')
-        file.write(json.dumps(obj=self.config,indent=4))
-
-    def get_id(self) -> int:
-        return self.config['id']
-
-    def set_id(self, id: int) -> None:
-        self.config['id'] = id
-
-    def get_title(self) -> str:
-        return self.config['title']
-
-    def set_title(self, title:str) -> None:
-        self.config['title'] = title
-
-    def get_public(self) -> bool:
-        return self.config['public']
-
-    def set_public(self, public:bool) -> None:
-        self.config['public'] = public
+        file.write(json.dumps(obj=config,indent=4))
 
 
-    def get_posts(self) -> List[Dict[str,str]]:
-        return self.config['posts']
     
-    def get_post(self,id:int) -> Union[None,Dict[str,str]]:
-        for post in self.get_posts():
-            if(post['id'] == id):
+    def get_post(self,id:int) -> Optional[Post]:
+        for post in self.posts:
+            if(post.id == id):
                 return post
         return None
 
 
-    def add_post(self,post_id:int,title:str) -> Dict[str,str]:
+    def add_post(self,post_id:int,title:str) -> Post:
         path = os.path.join("./",Project.getUniqueName("./",title=title)+".post")
 
         open(path, 'a').close()
-
-        post = {
-            'id':post_id,
-            'title': title,
-            'date':  date.today().isoformat(),
-            'path': path
-        }
-        self.config['posts'].append(post)
+        
+        post = Post(
+            id=post_id,
+            title = title,
+            date =  date.today(),
+            path = path,
+            public=False
+        )
+        self.posts.append(post)
         return post
+
 
     @staticmethod
     def getUniqueName(root:str,title:str) -> str:

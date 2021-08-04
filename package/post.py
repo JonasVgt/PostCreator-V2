@@ -1,6 +1,4 @@
 from dataclasses import dataclass
-from package.post_encoder import PostEncoder
-from package.io_controller import IOController
 from package.parser.document_parser import DocumentParser
 from typing import Any, Dict
 import datetime
@@ -17,9 +15,38 @@ class Post:
 
     
 
-    def parse(self) -> str:
-        input = IOController.load_post(self.path)
-        parser = DocumentParser(input,0)
-        return parser.parse()
+    # def parse(self) -> str:
+    #     input = IOController.load_post(self.path)
+    #     parser = DocumentParser(input,0)
+    #     return parser.parse()
+
+
+    @staticmethod
+    def load(obj : Dict[str,Any]) -> 'Post':
+        try:
+            if(type(obj['public']) != bool):
+                raise ValueError(f'parameter public must be of type bool but is '+ str(type(obj['public'])))
+            post = Post(
+            id=int(obj['id']),
+            title=str(obj['title']),
+            date=datetime.date.fromisoformat(obj['date']),
+            path=str(obj['path']),
+            public=obj['public']            
+            )
+            return post
+        except KeyError as e:
+            raise ValueError(f"Missing Parameter: '{e.args[0]}'")
+    
+    @staticmethod
+    def dump(obj: 'Post') -> Dict[str,Any]:
+        return{
+            'id':obj.id,
+            'title': obj.title,
+            'date':  obj.date.isoformat(),
+            'path': obj.path,
+            'public':obj.public
+        }
+
+
 
 
