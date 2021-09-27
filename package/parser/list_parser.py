@@ -80,13 +80,13 @@ class ListParser(BaseParser):
         """
         @returns: a string, which will be added to the beginning the parsed field
         """
-        return "<ul>"
+        return "</p><ul>"
 
     def after(self) -> str:
         """
         @returns: a string, which will be appended to the end of the parsed field
         """
-        return "</ul>"
+        return "</ul><p>"
 
     def parse(self) -> str:
         """

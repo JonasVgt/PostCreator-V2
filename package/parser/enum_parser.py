@@ -80,13 +80,13 @@ class EnumParser(BaseParser):
         """
         @returns: a string, which will be added to the beginning the parsed field
         """
-        return "<ol>"
+        return "</p><ol>"
 
     def after(self) -> str:
         """
         @returns: a string, which will be appended to the end of the parsed field
         """
-        return "</ol>"
+        return "</ol><p>"
 
     def parse(self) -> str:
         """

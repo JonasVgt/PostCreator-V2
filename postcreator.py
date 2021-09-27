@@ -24,7 +24,7 @@ def create_post(args):
     post = Post(
         id=post_id,
         title=title,
-        path="",#TODO,
+        path=Project.getUniqueName("./",title+".post"),
         public=False,
     )
     project.add_post(post)
@@ -75,6 +75,9 @@ def push_post_id(id:int):
     post = project.get_post(id)
     if(not post):
         sys.exit("No post with that ID")
+    print("----------")
+    print(post.parse())
+    print("----------")
     db = Database.getDatabase()
     db.update_post(project_id=project.id,post=post)
     
