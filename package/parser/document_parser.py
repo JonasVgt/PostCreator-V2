@@ -22,6 +22,8 @@ class DocumentParser(BaseParser):
         
         raise ParseError(f'No valid parser found for: {self._input[pos:pos+20]} [...]')
 
+    def processIdentifier(self) -> int:
+        return self._start
 
     def before(self) -> str:
         return '<p>'

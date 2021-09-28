@@ -8,12 +8,14 @@ from package.errors import ParseError
 class BaseParser(Parser):
 
     parsers : List[Type[Parser]] = []
+    _identifier :str = ""
 
     def __init__(self, input:str, start:int) -> None:
         self._input = input
         self._start = start
         self._end = start
         self._fields : List[Parser] = []
+        self._append_space = False
         self.tokenize()
 
 
@@ -62,8 +64,7 @@ class BaseParser(Parser):
         raise ParseError(f'No valid parser found for: {self._input[pos:pos+20]} [...]')
 
     def processText(self,start:int,end:int):
-        if(start!=end):
-            self._fields.append(TextParser(self._input,start,end))
+        self._fields.append(TextParser(self._input,start,end))
 
     def processIdentifier(self) -> int:
         """
@@ -72,7 +73,21 @@ class BaseParser(Parser):
         @returns: the position of the character directly after the end of own Identifier
 
         """
-        return self._start
+        pattern = re.compile(rf'\\{self._identifier} ')
+        match = pattern.match(self._input,self._start)
+        if(match):
+            self._append_space = True
+            return match.end()
+        
+        pattern = re.compile(rf'\\{self._identifier}{{')
+        match = pattern.match(self._input,self._start)
+
+        if(match):
+            return match.end()
+
+        raise ParseError(f'Identifier of {type(self)} does not match: {self._input[self._start:self._start+20]} [...]')
+        
+        
 
 
     def findNextToken(self, start :int) -> int:
@@ -125,15 +140,15 @@ class BaseParser(Parser):
         return ""
 
     def parse(self) -> str:
-        """
-        Parses this and all the contained fields
-
-        @returns: the parsed text  
-
-        """
         output = StringIO()
         output.write(self.before())
         for field in self._fields:
             output.write(field.parse())
         output.write(self.after())
         return output.getvalue()
+
+    @classmethod
+    def matches(cls, input:str, pos:int) -> bool:
+        pattern = re.compile(rf'\\{cls._identifier}[ [{{]')
+        return bool(pattern.match(input,pos))
+

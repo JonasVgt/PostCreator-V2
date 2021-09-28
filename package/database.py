@@ -17,10 +17,10 @@ class Database:
 
         config = Config()
         db = Database(
-            host=config.get(f"db_host"),
-            user=config.get(f"db_user"),
-            password=config.get(f"db_password"),
-            db_name=config.get(f"db_database")
+            host=config.get("db_host"),
+            user=config.get("db_user"),
+            password=config.get("db_password"),
+            db_name=config.get("db_database")
             )
         cls.database = db
         return db

@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+import os
 from package.parser.preprocessor import Preprocessor
 from package.parser.document_parser import DocumentParser
 from typing import Any, Dict
@@ -17,6 +18,8 @@ class Post:
     
 
     def parse(self) -> str:
+        if(not os.path.exists(self.path)):
+            open(self.path, 'x')
         input = open(self.path, 'r').read()
         preprocessed = Preprocessor.process(input)
         parser = DocumentParser(preprocessed,0)

@@ -36,8 +36,8 @@ class Parser(ABC):
 
         return ""
 
-    @staticmethod
-    def matches(input:str, pos:int) -> bool:
+    @classmethod
+    def matches(cls, input:str, pos:int) -> bool:
         """
         @params:
         input: the input string

@@ -15,12 +15,5 @@ class TextParser(Parser):
 
   
     def parse(self) -> str:
-        """
-        Parses this and all the contained fields
-
-        @returns: the parsed text  
-
-        """
-
         return self._input[self._start:self._end]
 

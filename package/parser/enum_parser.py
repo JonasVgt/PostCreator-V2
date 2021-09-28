@@ -8,6 +8,7 @@ from package.errors import ParseError
 
 class EnumParser(BaseParser):
 
+    _identifier = "enum"
 
     def __init__(self, input:str, start:int) -> None:
         self._input = input
@@ -23,35 +24,13 @@ class EnumParser(BaseParser):
 
 
     def processField(self,pos:int) -> int:
-        """
-        processes a field 
-
-        @param: 
-        pos: position of the first character of the token to be processed  
-
-        @returns: the position of character directly after the end of the processed field
-        
-        """
         if(self.matches_item(self._input,pos)):
             return self.processItem(pos)
 
         return super().processField(pos)
 
 
-
-    def processIdentifier(self) -> int:
-        """
-        Processes own Identifier at the beginning of the input
-
-        @returns: the position of the character directly after the end of own Identifier
-
-        """
-        pattern = re.compile(r'\\enum{ *')
-        match = pattern.match(self._input,self._start)
-        if(not match):
-            raise ParseError(f'Identifier of {type(self)} does not match: {self._input[self._start:self._start+20]} [...]')
-        
-        return match.end()
+    
 
     def processItem(self, pos:int):
         pattern = re.compile(rf'\\{{item}}')
@@ -64,10 +43,7 @@ class EnumParser(BaseParser):
             if(not match):
                 raise ParseError(f'Identifier of Item does not match: {self._input[pos:pos+20]} [...]')
         
-        if(not self._item_read):
-            if(len(self._fields) != 0):
-                raise ParseError(f"Item tag missing at: {self._input[self._start:self._start+20]}")
-                
+        if(not self._item_read):       
             self._item_read = True
         else:
             self._items.append(self._fields)
@@ -77,24 +53,12 @@ class EnumParser(BaseParser):
 
     
     def before(self) -> str:
-        """
-        @returns: a string, which will be added to the beginning the parsed field
-        """
         return "</p><ol>"
 
     def after(self) -> str:
-        """
-        @returns: a string, which will be appended to the end of the parsed field
-        """
         return "</ol><p>"
 
     def parse(self) -> str:
-        """
-        Parses this and all the contained fields
-
-        @returns: the parsed text  
-
-        """
         output = StringIO()
         output.write(self.before())
         for item in self._items:
@@ -119,16 +83,5 @@ class EnumParser(BaseParser):
         return bool(pattern.match(input,pos))
 
 
-    @classmethod
-    def matches(cls, input:str, pos:int) -> bool:
-        """
-        @params:
-        input: the input string
-        pos: the position, where this Parser should be tested
-
-        @returns: True, if the identifier matches
-        """
-        pattern = re.compile(r'\\enum{')
-        return bool(pattern.match(input,pos))
 
 BaseParser.parsers.append(EnumParser)
