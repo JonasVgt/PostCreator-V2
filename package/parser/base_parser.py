@@ -2,7 +2,7 @@ from io import StringIO
 from package.parser.text_parser import TextParser
 from package.parser.parser import Parser
 import re
-from typing import List, Type
+from typing import Dict, List, Type
 from package.errors import ParseError
 
 class BaseParser(Parser):
@@ -16,6 +16,7 @@ class BaseParser(Parser):
         self._end = start
         self._fields : List[Parser] = []
         self._append_space = False
+        self.arguments: Dict[str,str] = {}
         self.tokenize()
 
 
@@ -85,9 +86,31 @@ class BaseParser(Parser):
         if(match):
             return match.end()
 
+        pattern = re.compile(rf'\\{self._identifier}\[(.*?)\]{{')
+        match = pattern.match(self._input,self._start)
+
+        if(match):
+            self.processArguments(match.group(1))
+            return match.end()
+
         raise ParseError(f'Identifier of {type(self)} does not match: {self._input[self._start:self._start+20]} [...]')
         
-        
+    
+    def processArguments(self, argString:str):
+        """
+        Processes the arguments given in the brackets and stores them in the dictionary arguments.
+
+        @param
+        argString: the String inside the brackets of the tag        
+        """
+        args = argString.split(",")
+        for argument in args:
+            if(argument == ''):
+                continue
+            splittedArgument = argument.split("=")
+            if(len(splittedArgument) != 2):
+                raise ParseError("Arguments must have exactly one '=' symbol")
+            self.arguments[splittedArgument[0]] = splittedArgument[1]
 
 
     def findNextToken(self, start :int) -> int:
